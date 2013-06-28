@@ -82,4 +82,49 @@ def spqST(pq,T):
     ST = Permutation(Ss).robinson_schensted()
     return ST[1]
 
+# take tableau return tabmac compatable string
+def printTab(T):
+    l = []
+    length = len(T)
+    for row in T:
+        newRow = []
+        for entry in row:
+            newRow.append(str(entry))
+        if len(l) == len(T)-1:
+            l.append(''.join(newRow))
+        else:
+            l.append(''.join(newRow)+',')
+    return '\\scriptsize\\young('+''.join(l)+')'
 
+
+def bigTable(n):
+    ST = StandardTableaux(n)
+    pairs = []
+    for p in range(1,n+1):
+        for q in range(p+1,n+1):
+            pairs.append([p,q])
+    print('\\begin{center}')
+    cols = ['|l|']
+    for i in pairs:
+        cols.append('l|')
+    print('\\begin{longtable}{'+"".join(cols)+'}')
+    print('\\hline')
+    toprow = []
+    for pq in pairs:
+        [p,q] = pq
+        [s,t] = [str(p),str(q)]
+        toprow.append('$s_{%s %s}$'%(s,t))
+    print('& '+' & '.join(toprow)+' \\\\')
+    print('\\hline')
+
+    for T in ST:
+        printT = printTab(T)
+        tableRow = []
+        tableRow.append(printT)
+        for pq in pairs:
+            tableRow.append(printTab(spqST(pq,T)))
+        print(' & '.join(tableRow)+' \\\\')
+
+    print('\\hline')
+    print('\\end{longtable}')
+    print('\\end{center}')
