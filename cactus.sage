@@ -82,3 +82,4 @@ def spqST(pq,T):
     ST = Permutation(Ss).robinson_schensted()
     return ST[1]
 
+
