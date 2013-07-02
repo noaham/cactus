@@ -166,19 +166,6 @@ def len2Perm(n):
     return PermutationGroup(spqImages)
 
 def testEq(n):
-    for i in range(4,n+1):
-        N = len2Perm(i)
-        G = wholePerm(i)
-        print(i)
-        if N == G:
-            print('they are equal!')
-        else:
-            print('not equal')
-            if N.is_normal(G):
-                print('its normal!')
-                print(G.quotient(N))
-
-def tester(n):
     N = len2Perm(n)
     G = wholePerm(n)
     print(n)
@@ -189,3 +176,58 @@ def tester(n):
         if N.is_normal(G):
             print('its normal!')
             print(G.quotient(N))
+
+
+# above we considered J_n acting on all standard tableaux of any shape
+# lets look at what happens when we fix a shape
+def getPermShape(pq,part):
+    ST = StandardTableaux(part)
+    # ST is not exactly a list so index doesnt work with it. We create a list:
+    STlist = []
+    for T in ST:
+        STlist.append(T)
+    m = len(ST)
+    perm = []
+    for i in range(0,m):
+        perm.append(STlist.index(spqST(pq,ST[i]))+1)
+    return Permutation(perm)
+
+# Get permutation group of whole J_n in S_m
+def wholePermShape(part):
+    n = sum(part)
+    pairs = []
+    for p in range(1,n+1):
+        for q in range(p+2,n+1):
+            pairs.append([p,q])
+    spqImages = []
+    for pq in pairs:
+        spqImages.append(getPermShape(pq,part))
+    return PermutationGroup(spqImages)
+
+# Get permutation group of only length 2 elements
+def len2PermShape(part):
+    n = sum(part)
+    pairs = []
+    for p in range(1,n-1):
+        pairs.append([p,p+2])
+    spqImages = []
+    for pq in pairs:
+        spqImages.append(getPermShape(pq,part))
+    return PermutationGroup(spqImages)
+
+def testEqShape(part):
+    N = len2PermShape(part)
+    G = wholePermShape(part)
+    if N == G:
+        print('they are equal!')
+    else:
+        print('not equal')
+        if N.is_normal(G):
+            print('its normal!')
+            print(G.quotient(N))
+
+def testall(n):
+    parts = Partitions(n)
+    for part in parts:
+        print('for the partition %s'%(part))
+        testEqShape(part)
