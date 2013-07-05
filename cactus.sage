@@ -232,5 +232,3 @@ def testall(n):
         print('for the partition %s'%(part))
         testEqShape(part)
 
-
-This is a test
